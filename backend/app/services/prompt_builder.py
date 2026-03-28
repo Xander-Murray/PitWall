@@ -1,4 +1,5 @@
-from app.schemas.request_models import AnalyzeTextRequest
+from typing import Optional
+from app.schemas.request_models import AnalyzeTextRequest, VehicleContext
 
 SYSTEM_PROMPT = """You are PitWall, an AI repair-decision copilot inspired by an F1 race engineer.
 
@@ -80,3 +81,31 @@ Tasks:
 6. Generate follow-up questions that ask the mechanic to show their evidence (measurements, photos, test results).
 7. Write one short script for what the driver can say next. It must reference the specific repairs in this quote by name and match the urgency level — urgent safety issues need a different tone than optional maintenance upsells. For unclear items, the script should ask for evidence before approving.
 8. Add confidence notes where uncertainty exists, especially when a shop's claimed urgency is not backed by findings in the quote."""
+
+
+def build_image_user_prompt(vehicle: Optional[VehicleContext]) -> str:
+    year = vehicle.year if vehicle and vehicle.year else "Unknown"
+    make = vehicle.make if vehicle and vehicle.make else "Unknown"
+    model = vehicle.model if vehicle and vehicle.model else "Unknown"
+    mileage = vehicle.mileage if vehicle and vehicle.mileage else "Unknown"
+
+    return f"""Read the repair estimate or mechanic invoice in this image.
+Extract all line items, prices, and descriptions, then analyze exactly as if you had received the text directly.
+
+Vehicle context:
+- Year: {year}
+- Make: {make}
+- Model: {model}
+- Mileage: {mileage}
+
+Tasks:
+1. Summarize what the shop is recommending AND whether the evidence in the quote supports the urgency they're implying.
+2. Classify the overall risk based on what is actually evidenced, not what the mechanic claims.
+3. Break down each repair item. For each item's "reason" field: explain whether the urgency label is supported by evidence in the quote or is just the mechanic's assertion.
+4. Assign urgency labels based on evidence, not claims.
+5. Flag items that should be verified — especially anything marked urgent without supporting specifics.
+6. Generate follow-up questions that ask the mechanic to show their evidence (measurements, photos, test results).
+7. Write one short script for what the driver can say next, referencing the specific repairs by name.
+8. Add confidence notes where uncertainty exists.
+
+Return ONLY the JSON object matching the schema. No markdown, no explanation, no preamble."""

@@ -49,6 +49,29 @@ export async function analyzeText(
   return res.json()
 }
 
+export async function analyzeImage(
+  file: File,
+  vehicle?: VehicleContext
+): Promise<AnalyzeResponse> {
+  const formData = new FormData()
+  formData.append('file', file)
+  if (vehicle?.year)    formData.append('year',          String(vehicle.year))
+  if (vehicle?.make)    formData.append('make',           vehicle.make)
+  if (vehicle?.model)   formData.append('vehicle_model',  vehicle.model)
+  if (vehicle?.mileage) formData.append('mileage',        String(vehicle.mileage))
+
+  const res = await fetch(`${API_URL}/api/analyze-image`, {
+    method: 'POST',
+    body: formData,
+    // No Content-Type header — browser sets multipart boundary automatically
+  })
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}))
+    throw new Error(err.detail || 'Image analysis failed')
+  }
+  return res.json()
+}
+
 export async function getDemoScenarios(): Promise<DemoScenario[]> {
   const res = await fetch(`${API_URL}/api/demo-scenarios`)
   if (!res.ok) throw new Error('Failed to load demo scenarios')
