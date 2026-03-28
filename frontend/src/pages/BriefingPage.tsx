@@ -154,7 +154,11 @@ function RepairItemCard({ item, index }: { item: RepairItem; index: number }) {
   return (
     <div className={`${stagger} border border-[#2a2a2a] rounded-lg overflow-hidden flex`}>
       {/* Left urgency bar */}
-      <div className={`w-1 shrink-0 ${uc.border} border-l-2 border-y-0 border-r-0`} />
+      <div className="w-1 shrink-0" style={{ backgroundColor:
+        item.urgency === 'pit_now' ? '#FF1801' :
+        item.urgency === 'next_lap' ? '#FFF200' :
+        item.urgency === 'monitor' ? '#00D2BE' : '#6B7280'
+      }} />
       <div className="flex-1 p-4 bg-[#141414]">
         <div className="flex items-start justify-between gap-2 mb-2">
           <span className="font-sans font-semibold text-text-primary text-sm leading-tight">{item.name}</span>
@@ -175,6 +179,12 @@ function RepairItemCard({ item, index }: { item: RepairItem; index: number }) {
           }`}>
             {item.confidence.toUpperCase()} CONFIDENCE
           </span>
+          <div className="ml-auto w-8 h-1 rounded" style={{ backgroundColor:
+            item.urgency === 'pit_now' ? '#FF1801' :
+            item.urgency === 'next_lap' ? '#FFF200' :
+            item.urgency === 'monitor' ? '#00D2BE' : '#6B7280',
+            opacity: 0.4
+          }} />
         </div>
       </div>
     </div>

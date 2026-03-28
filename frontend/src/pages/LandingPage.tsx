@@ -11,7 +11,7 @@ export default function LandingPage() {
   }, [])
 
   return (
-    <div className="min-h-screen carbon-bg flex flex-col">
+    <div className="min-h-screen carbon-bg scanline-overlay flex flex-col">
       {/* Nav */}
       <nav className="flex items-center justify-between px-6 py-4 border-b border-[#2a2a2a]">
         <div className="flex items-center gap-3">
@@ -28,7 +28,13 @@ export default function LandingPage() {
       </nav>
 
       {/* Hero */}
-      <main className="flex-1 flex flex-col items-center justify-center px-6 py-20 text-center">
+      <main className="flex-1 flex flex-col items-center justify-center px-6 py-20 text-center relative">
+        {/* Decorative grid */}
+        <div className="absolute inset-0 opacity-5 pointer-events-none" style={{
+          backgroundImage: 'linear-gradient(#00D2BE 1px, transparent 1px), linear-gradient(90deg, #00D2BE 1px, transparent 1px)',
+          backgroundSize: '60px 60px'
+        }} />
+
         {/* Race status strip */}
         <div className="fade-in-1 flex items-center gap-2 mb-8">
           <div className="w-2 h-2 rounded-full bg-accent animate-pulse" />
@@ -37,7 +43,7 @@ export default function LandingPage() {
 
         {/* Main headline */}
         <h1 className="fade-in-2 font-sans font-bold text-4xl sm:text-5xl lg:text-6xl text-text-primary leading-tight max-w-3xl mb-6">
-          Repair advice under pressure?{' '}
+          Repair advice under pressure?<br className="hidden sm:block" />
           <span className="text-accent">Bring in your pit wall.</span>
         </h1>
 
@@ -84,7 +90,7 @@ export default function LandingPage() {
       </main>
 
       {/* Footer */}
-      <footer className="px-6 py-4 border-t border-[#2a2a2a] flex items-center justify-between">
+      <footer className="px-6 py-4 border-t border-[#2a2a2a] flex items-center justify-between" style={{ borderTopColor: 'rgba(0, 210, 190, 0.15)' }}>
         <span className="font-mono text-xs text-text-secondary">PITWALL -- CodeQuantum 2026</span>
         <span className="font-mono text-xs text-[#3a3a3a]">F1-INSPIRED REPAIR COPILOT</span>
       </footer>
