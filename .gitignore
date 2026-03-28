@@ -29,3 +29,6 @@ CLAUDE.md
 
 # Local scripts (dev tooling, not part of the project)
 backend/scripts/
+
+# Local media exports
+screenshots/PitWall_Demo.mp4
