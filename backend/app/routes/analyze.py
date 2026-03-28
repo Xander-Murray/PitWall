@@ -1,9 +1,12 @@
+import logging
 from fastapi import APIRouter, HTTPException, UploadFile, File, Form
 from typing import Optional
 from app.schemas.request_models import AnalyzeTextRequest, VehicleContext
 from app.schemas.response_models import AnalyzeResponse
 from app.services.ai_client import analyze_quote, analyze_image_quote
 from app.database import get_db
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/api", tags=["analyze"])
 
@@ -26,9 +29,11 @@ async def analyze_text(request: AnalyzeTextRequest):
             "result": result.model_dump(),
         }).execute()
         if insert_result.data:
-            result.briefing_id = insert_result.data[0]["id"]
-    except Exception:
-        pass
+            result.briefing_id = str(insert_result.data[0]["id"])
+        else:
+            logger.warning("Supabase insert returned no data for text analysis")
+    except Exception as e:
+        logger.error("Supabase insert failed for text analysis: %s", e)
 
     return result
 
@@ -68,8 +73,10 @@ async def analyze_image(
             "result": result.model_dump(),
         }).execute()
         if insert_result.data:
-            result.briefing_id = insert_result.data[0]["id"]
-    except Exception:
-        pass
+            result.briefing_id = str(insert_result.data[0]["id"])
+        else:
+            logger.warning("Supabase insert returned no data for image analysis")
+    except Exception as e:
+        logger.error("Supabase insert failed for image analysis: %s", e)
 
     return result
