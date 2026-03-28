@@ -17,6 +17,7 @@ build/
 
 # Docs (planning only)
 pitwall_docs/
+CLAUDE.md
 
 # Editor
 .DS_Store
