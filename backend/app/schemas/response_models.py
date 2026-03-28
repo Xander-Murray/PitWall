@@ -11,6 +11,7 @@ class RepairItem(BaseModel):
     verify_flag: bool
     questions_to_ask: List[str]
     confidence: Risk
+    price_range: Optional[str] = None  # e.g. "Typical: $150–$300"
 
 class AnalyzeResponse(BaseModel):
     summary: str
@@ -20,3 +21,4 @@ class AnalyzeResponse(BaseModel):
     questions_for_the_garage: List[str]
     what_to_say_next: str
     confidence_notes: List[str]
+    briefing_id: Optional[str] = None  # UUID assigned after Supabase insert
