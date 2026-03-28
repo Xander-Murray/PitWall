@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from app.routes import analyze, demo, stats
 
 app = FastAPI(title="PitWall API")
 
@@ -10,6 +11,11 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.include_router(analyze.router)
+app.include_router(demo.router)
+app.include_router(stats.router)
+
 
 @app.get("/")
 def health():

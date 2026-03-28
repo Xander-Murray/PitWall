@@ -4,56 +4,98 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
-    --radius: 0.5rem;
+    --background: #0d0d0d;
+    --surface: #141414;
+    --surface-elevated: #1a1a1a;
+    --border: #2a2a2a;
+    --text-primary: #e8e8e8;
+    --text-secondary: #9ca3af;
+    --accent: #00D2BE;
+    --accent-silver: #C0C0C0;
+    --pit-now: #FF1801;
+    --next-lap: #FFF200;
+    --monitor: #00D2BE;
+    --unclear: #6B7280;
   }
 
-  .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
+  * {
+    border-color: var(--border);
+  }
+
+  body {
+    background-color: var(--background);
+    color: var(--text-primary);
+    font-family: 'Space Grotesk', sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
   }
 }
 
-@layer base {
-  * {
-    @apply border-border;
+@layer utilities {
+  .font-mono-data {
+    font-family: 'Space Mono', monospace;
   }
-  body {
-    @apply bg-background text-foreground;
+
+  /* Carbon fiber texture background */
+  .carbon-bg {
+    background-color: var(--background);
+    background-image:
+      repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 2px,
+        rgba(255,255,255,0.01) 2px,
+        rgba(255,255,255,0.01) 4px
+      );
   }
+
+  /* Urgency color utilities */
+  .urgency-pit-now { color: var(--pit-now); }
+  .urgency-next-lap { color: var(--next-lap); }
+  .urgency-monitor { color: var(--monitor); }
+  .urgency-unclear { color: var(--unclear); }
+
+  .urgency-border-pit-now { border-color: var(--pit-now); }
+  .urgency-border-next-lap { border-color: var(--next-lap); }
+  .urgency-border-monitor { border-color: var(--monitor); }
+  .urgency-border-unclear { border-color: var(--unclear); }
+
+  .urgency-bg-pit-now { background-color: rgba(255, 24, 1, 0.15); }
+  .urgency-bg-next-lap { background-color: rgba(255, 242, 0, 0.15); }
+  .urgency-bg-monitor { background-color: rgba(0, 210, 190, 0.15); }
+  .urgency-bg-unclear { background-color: rgba(107, 114, 128, 0.15); }
+
+  /* Teal glow for primary actions */
+  .teal-glow {
+    box-shadow: 0 0 20px rgba(0, 210, 190, 0.2);
+  }
+
+  /* Blinking cursor for telemetry */
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+  .cursor-blink {
+    animation: blink 1s step-end infinite;
+  }
+
+  /* Fade in animation */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .fade-in {
+    animation: fadeIn 0.4s ease-out forwards;
+  }
+
+  /* Staggered fade for cards */
+  .fade-in-1 { animation: fadeIn 0.4s ease-out 0.1s both; }
+  .fade-in-2 { animation: fadeIn 0.4s ease-out 0.2s both; }
+  .fade-in-3 { animation: fadeIn 0.4s ease-out 0.3s both; }
+  .fade-in-4 { animation: fadeIn 0.4s ease-out 0.4s both; }
+  .fade-in-5 { animation: fadeIn 0.4s ease-out 0.5s both; }
 }
