@@ -53,12 +53,12 @@ export default function BriefingPage() {
         <div>
           <button onClick={() => navigate('/')} className="font-mono text-accent text-sm font-bold tracking-widest hover:opacity-80 transition-opacity">PITWALL</button>
           {vehicleLabel && (
-            <span className="ml-3 font-mono text-xs text-text-secondary">{vehicleLabel}</span>
+            <span className="ml-3 font-mono text-xs text-silver/50">{vehicleLabel}</span>
           )}
         </div>
         <button
           onClick={() => navigate('/pit-check')}
-          className="font-mono text-xs text-text-secondary hover:text-accent transition-colors tracking-wider uppercase border border-[#2a2a2a] hover:border-accent rounded px-3 py-1.5"
+          className="font-mono text-xs text-silver/50 hover:text-silver transition-colors tracking-wider uppercase border border-silver/15 hover:border-silver/40 rounded px-3 py-1.5"
         >
           New Check
         </button>
@@ -68,7 +68,7 @@ export default function BriefingPage() {
         {/* Header */}
         <div className="fade-in-1 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <div className="font-mono text-xs text-text-secondary tracking-widest uppercase mb-1">Pit-Wall Briefing</div>
+            <div className="font-mono text-xs text-silver/50 tracking-widest uppercase mb-1">Pit-Wall Briefing</div>
             <h1 className="font-sans font-bold text-2xl text-text-primary">Race Engineer Analysis</h1>
           </div>
           {/* Overall risk badge */}
@@ -92,7 +92,7 @@ export default function BriefingPage() {
 
         {/* Repair Items Grid */}
         <section className="fade-in-3">
-          <div className="font-mono text-xs text-text-secondary tracking-widest uppercase mb-3">
+          <div className="font-mono text-xs text-silver/50 tracking-widest uppercase mb-3">
             Repair Items -- {result.repair_items.length} identified
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -117,7 +117,7 @@ export default function BriefingPage() {
             <div className="px-5 py-4 bg-[#141414] space-y-2">
               {result.confidence_notes.map((note, i) => (
                 <p key={i} className="text-text-secondary font-sans text-xs leading-relaxed flex gap-2">
-                  <span className="text-[#3a3a3a] font-mono shrink-0">--</span>
+                  <span className="text-silver/25 font-mono shrink-0">--</span>
                   {note}
                 </p>
               ))}
@@ -129,7 +129,7 @@ export default function BriefingPage() {
         <div className="fade-in-5 flex flex-col sm:flex-row gap-3 pt-2 pb-8">
           <button
             onClick={() => navigate('/pit-check')}
-            className="flex-1 py-3 border border-[#2a2a2a] text-text-primary font-sans font-bold text-sm tracking-wider uppercase rounded hover:border-accent hover:text-accent transition-all"
+            className="flex-1 py-3 border border-silver/15 text-silver/70 font-sans font-bold text-sm tracking-wider uppercase rounded hover:border-silver/40 hover:text-silver transition-all"
           >
             Run Another Check
           </button>
@@ -174,8 +174,8 @@ function RepairItemCard({ item, index }: { item: RepairItem; index: number }) {
             </span>
           )}
           <span className={`font-mono text-xs ${
-            item.confidence === 'high' ? 'text-[#00D2BE]' :
-            item.confidence === 'medium' ? 'text-[#9ca3af]' : 'text-[#6B7280]'
+            item.confidence === 'high' ? 'text-silver/70' :
+            item.confidence === 'medium' ? 'text-silver/45' : 'text-silver/25'
           }`}>
             {item.confidence.toUpperCase()} CONFIDENCE
           </span>
@@ -218,7 +218,7 @@ function QuestionsCard({ questions }: { questions: string[] }) {
       <div className="px-5 py-4 bg-[#141414] flex-1 space-y-3">
         {questions.map((q, i) => (
           <div key={i} className="flex gap-3">
-            <span className="font-mono text-xs text-accent shrink-0 mt-0.5">{String(i + 1).padStart(2, '0')}</span>
+            <span className="font-mono text-xs text-silver/55 shrink-0 mt-0.5">{String(i + 1).padStart(2, '0')}</span>
             <p className="text-text-primary font-sans text-sm leading-relaxed">{q}</p>
           </div>
         ))}

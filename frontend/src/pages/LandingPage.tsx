@@ -16,7 +16,7 @@ export default function LandingPage() {
       <nav className="flex items-center justify-between px-6 py-4 border-b border-[#2a2a2a]">
         <div className="flex items-center gap-3">
           <span className="font-mono text-accent text-xl font-bold tracking-widest">PITWALL</span>
-          <span className="hidden sm:block text-text-secondary text-xs font-mono tracking-wider uppercase border-l border-[#2a2a2a] pl-3">Repair Decision Copilot</span>
+          <span className="hidden sm:block text-silver/50 text-xs font-mono tracking-wider uppercase border-l border-silver/15 pl-3">Repair Decision Copilot</span>
         </div>
         <div className="flex items-center gap-2">
           {pitCount !== null && (
@@ -80,7 +80,7 @@ export default function LandingPage() {
               { step: '03', label: 'Drive away confident', desc: 'Get questions to ask and a script for what to say.' },
             ].map(({ step, label, desc }) => (
               <div key={step} className="p-6 bg-[#141414]">
-                <div className="font-mono text-accent text-xs tracking-widest mb-2">{step}</div>
+                <div className="font-mono text-silver/60 text-xs tracking-widest mb-2">{step}</div>
                 <div className="font-sans font-semibold text-text-primary text-sm mb-1">{label}</div>
                 <div className="text-text-secondary text-xs leading-relaxed">{desc}</div>
               </div>
@@ -92,7 +92,7 @@ export default function LandingPage() {
       {/* Footer */}
       <footer className="px-6 py-4 border-t border-[#2a2a2a] flex items-center justify-between" style={{ borderTopColor: 'rgba(0, 210, 190, 0.15)' }}>
         <span className="font-mono text-xs text-text-secondary">PITWALL -- CodeQuantum 2026</span>
-        <span className="font-mono text-xs text-[#3a3a3a]">F1-INSPIRED REPAIR COPILOT</span>
+        <span className="font-mono text-xs text-silver/20 tracking-widest">F1-INSPIRED REPAIR COPILOT</span>
       </footer>
     </div>
   )

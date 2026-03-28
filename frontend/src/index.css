@@ -7,11 +7,13 @@
     --background: #0d0d0d;
     --surface: #141414;
     --surface-elevated: #1a1a1a;
-    --border: #2a2a2a;
-    --text-primary: #e8e8e8;
-    --text-secondary: #9ca3af;
+    --border: rgba(192, 192, 192, 0.10);
+    --border-bright: rgba(192, 192, 192, 0.22);
+    --text-primary: #D8D8D8;
+    --text-secondary: #8a9099;
     --accent: #00D2BE;
-    --accent-silver: #C0C0C0;
+    --silver: #C0C0C0;
+    --silver-dim: rgba(192, 192, 192, 0.45);
     --pit-now: #FF1801;
     --next-lap: #FFF200;
     --monitor: #00D2BE;
@@ -93,6 +95,11 @@
     box-shadow: 0 0 20px rgba(0, 210, 190, 0.2);
   }
 
+  /* Silver glow for structural hover states */
+  .silver-glow {
+    box-shadow: 0 0 0 1px rgba(192, 192, 192, 0.12), 0 4px 20px rgba(0, 0, 0, 0.5);
+  }
+
   /* Blinking cursor for telemetry */
   @keyframes blink {
     0%, 100% { opacity: 1; }
@@ -165,7 +172,7 @@
     @apply border border-[#2a2a2a] rounded-lg bg-[#141414] transition-all duration-200;
   }
   .pit-card:hover {
-    @apply border-[#3a3a3a];
-    box-shadow: 0 0 0 1px rgba(0, 210, 190, 0.05), 0 4px 16px rgba(0, 0, 0, 0.4);
+    border-color: rgba(192, 192, 192, 0.22);
+    box-shadow: 0 0 0 1px rgba(192, 192, 192, 0.08), 0 4px 20px rgba(0, 0, 0, 0.5);
   }
 }

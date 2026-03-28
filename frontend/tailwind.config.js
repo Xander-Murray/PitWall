@@ -20,6 +20,7 @@ export default {
         'text-secondary': '#9ca3af',
         accent: '#00D2BE',
         silver: '#C0C0C0',
+        'silver-dim': 'rgba(192, 192, 192, 0.45)',
         'pit-now': '#FF1801',
         'next-lap': '#FFF200',
         monitor: '#00D2BE',
