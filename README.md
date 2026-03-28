@@ -40,12 +40,15 @@ PitWall acts as your **AI race engineer** during a repair visit — analyzing me
 
 - **Paste or upload a repair quote** — text input, drag-and-drop image upload (JPEG/PNG/WebP), or demo scenario
 - **AI analysis in seconds** — text powered by Llama 3.3 70B, image analysis by Llama 4 Scout 17B vision, both via Groq
-- **Urgency classification per item** — PIT NOW / NEXT LAP / MONITOR / UNCLEAR
+- **Evidence-based urgency** — PIT NOW / NEXT LAP / MONITOR / UNCLEAR assigned by what's proven, not what's claimed
+- **Price reasonableness flag** — typical national cost range shown per repair item so you know if you're being overcharged
+- **Confidence qualifier** — tells you how many items are evidenced vs unclear so you know how much to trust the verdict
 - **Plain-English explanations** — no mechanic jargon
 - **Verification flags** — items that need a second look before approval
-- **Questions for the garage** — specific, respectful, grounded questions to ask
+- **Questions for the garage** — specific, respectful, evidence-demanding questions to ask
 - **What to Say Next** — a calm, confident script tailored to your exact situation
-- **8 demo scenarios** — including real-world targeting scenarios
+- **Share your briefing** — shareable URL so you can forward the analysis to a friend before approving anything
+- **8 demo scenarios** — upsell stacks, pressure tactics, legitimate safety issues, and more
 - **Live pit checks counter** — every analysis stored to Supabase in real time
 
 ---
@@ -56,16 +59,16 @@ PitWall acts as your **AI race engineer** during a repair visit — analyzing me
 
 PitWall ships with 8 ready-to-run scenarios including:
 
-| Scenario                      | What it demonstrates                           |
-| ----------------------------- | ---------------------------------------------- |
-| Mixed Repair Quote            | Separating safety-critical work from upsells   |
-| Urgent Safety Issue           | Immediate action required — brake line failure |
-| The Oil Change That Grew      | $40 visit becomes $895 in pressure             |
-| First Car, First Repair       | Intimidation tactics on a first-time owner     |
-| Vague Safety Warnings         | No evidence, no specifics, all urgency         |
-| Dashboard Warning Lights      | Multiple codes — some serious, some not        |
-| High-Mileage 100k Bundle      | Real maintenance vs opportunistic additions    |
-| Preventive Maintenance Upsell | When "recommended" doesn't mean "required"     |
+| Scenario                | What it demonstrates                               |
+| ----------------------- | -------------------------------------------------- |
+| Urgent Safety Issue     | Legitimate safety repairs backed by evidence       |
+| The Oil Change That Grew | $49 visit becomes $954 in pressure                |
+| Vague Safety Warnings   | No measurements, no evidence, all urgency          |
+| First Car, First Repair | Intimidation tactics on a first-time owner         |
+| 100k Service Bundle     | Real maintenance due vs opportunistic additions    |
+| Dashboard Warning Lights | Multiple codes — some serious, some not           |
+| Post-Accident Add-Ons   | Unrelated items tacked onto a collision repair     |
+| Dealer Service Upsell   | New car, $2k checklist after a free oil change     |
 
 ---
 
@@ -182,6 +185,7 @@ PitWall/
 │       ├── main.py
 │       ├── routes/
 │       │   ├── analyze.py
+│       │   ├── briefing.py
 │       │   ├── demo.py
 │       │   └── stats.py
 │       ├── services/
