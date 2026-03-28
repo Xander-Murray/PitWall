@@ -1,37 +1,124 @@
--- Seed 5 demo scenarios for PitWall
+-- PitWall demo scenarios seed
+-- 8 scenarios covering the full spectrum: evidenced safety issues, upsell stacks,
+-- pressure tactics, and targeted scenarios for first-time and female drivers.
+-- Each includes per-item pricing so the price reasonableness feature can compare.
+
 INSERT INTO demo_scenarios (title, description, quote_text) VALUES
-
-('Mixed Repair Quote',
- 'Urgent brake concern mixed with likely upsell items -- a classic shop visit.',
- 'Vehicle in for routine inspection. Technician recommends: Front brake pads replacement -- pads worn to 2mm, metal-on-metal contact imminent. Brake fluid flush -- fluid showing moisture contamination. Cabin air filter replacement -- filter visibly dirty. Fuel injector cleaning service -- recommended every 30k miles. Total estimate: $485.'),
-
-('Preventive Maintenance Upsell',
- 'Mostly optional maintenance items presented as urgent -- good scenario to verify.',
- 'Customer brought in for oil change. Additional services recommended: Transmission fluid flush -- technician says fluid is dark and should be changed. Fuel system cleaning -- injector cleaner treatment to improve performance. Engine oil treatment additive -- BG MOA added to engine for protection. Power steering fluid exchange -- fluid looks old. Coolant top-off service -- minor coolant loss noted. Total estimate: $620.'),
 
 ('Urgent Safety Issue',
- 'Clear safety-critical repair requiring immediate attention.',
- 'Customer reports soft brake pedal and pulling to the left when braking. Inspection findings: Left front brake caliper seized -- caliper not releasing, causing brake drag and pull. Brake line showing external corrosion near left front wheel -- potential leak risk. Right rear brake drum worn past service limit. Brake fluid critically low. Technician advises do not drive until repaired. Estimate: $890.'),
+ 'Clear safety-critical repairs backed by inspection findings — a legitimate quote.',
+ 'Vehicle: 2018 Ford F-150, 74,200 miles. Customer reports soft brake pedal and pulling left when braking.
 
-('High-Mileage 100k Service Bundle',
- 'Major service milestone with many items -- some necessary, some opportunistic.',
- 'Vehicle at 103,000 miles. Shop recommending full 100k service: Timing belt and water pump replacement -- due by mileage, critical failure risk if skipped. Spark plugs replacement -- original plugs, recommended at 100k. Serpentine belt inspection -- showing cracking, recommend replacement. Coolant system flush -- old coolant, recommend full exchange. Power steering flush -- fluid dark. Differential fluid change -- standard maintenance. Air filter replacement -- dirty. Wiper blades -- worn. Total estimate: $1,450.'),
+Inspection findings:
+- Left front brake caliper: seized and not releasing. Confirmed on lift — caliper locked, visible brake drag. Brake fluid leaking at caliper bleed screw. $420 parts and labor.
+- Brake lines (front left): external corrosion visible near caliper, surface rust penetrating line wall. Recommend replacement before failure. $180.
+- Brake fluid: tested at 3.8% moisture content — above 3.5% replacement threshold per test strip. Flush and refill: $85.
+- Right rear brake pads: measured at 2mm — at minimum service limit. Replace before next inspection. $160.
 
-('Dashboard Warning Lights',
- 'Multiple warning codes -- some serious, some emissions-related.',
- 'Check engine light on, customer reports slight decrease in fuel economy. Diagnostic scan results: P0420 -- Catalytic converter efficiency below threshold, Bank 1. P0171 -- System too lean, Bank 1, possible vacuum leak or O2 sensor. P0442 -- Small EVAP system leak detected. Technician recommends: Replace catalytic converter ($850), replace upstream O2 sensor ($180), smoke test for EVAP leak ($95), possible EVAP purge valve replacement ($120). Total estimate: $1,245.');
-
--- Additional targeted scenarios
-INSERT INTO demo_scenarios (title, description, quote_text) VALUES
+Technician notes: Vehicle should not be driven until caliper and brake line are addressed. Photos of caliper and corrosion on file. Estimate total: $845.'),
 
 ('The Oil Change That Grew',
- 'Went in for a $40 oil change. Left with a $900 estimate — and a lot of pressure.',
- 'Customer came in for standard oil change. Technician performed multi-point inspection and identified the following additional concerns: Serpentine belt worn and cracking — recommend immediate replacement, belt failure will leave you stranded ($180). Power steering fluid contaminated — flush and refill required ($120). Cabin air filter extremely dirty — restricted airflow affecting AC and heat ($60). Fuel system cleaning — injectors dirty, recommend full service to prevent breakdowns ($150). Wiper blades worn — unsafe in rain ($45). Coolant looks old — recommend flush before winter ($120). Engine air filter dirty ($40). Battery voltage reading low — recommend replacement before it fails and leaves you stranded ($180). Total additional service estimate: $895. Technician recommends approving all items today for safety.'),
+ 'Came in for a $49 oil change. Left with a $950 estimate and a lot of pressure.',
+ 'Vehicle: 2019 Toyota Camry, 38,400 miles. Customer in for standard oil change.
 
-('First Car, First Repair',
- 'First-time car owner. Mechanic used technical language and implied the car was unsafe to drive without $1,200 in work.',
- 'Vehicle: 2015 Honda Civic, 67,000 miles, customer is first-time owner. Service advisor states the following issues were found during inspection: Front struts leaking — vehicle is unsafe, handling is compromised, must be replaced soon ($480). Brake rotors showing wear grooves — recommend resurface or replace ($220). Transmission service overdue — fluid dark and burnt, risk of transmission failure if not serviced ($180). Spark plugs due for replacement at this mileage ($120). Tire rotation and balance — tires showing uneven wear from bad struts ($80). Front end alignment needed due to strut wear ($90). Service advisor told customer: your car is not safe to drive in this condition. We strongly recommend approving all repairs today. Total estimate: $1,170.'),
+Oil change completed: $49.
+
+Technician multi-point inspection findings:
+- Serpentine belt: showing wear, recommend replacement before it snaps and leaves you stranded. $185.
+- Fuel system cleaning: injectors should be cleaned every 30k miles for performance. $149.
+- Cabin air filter: dirty, affecting your AC and heat. $79.
+- Power steering fluid: looks dark, should be flushed. $119.
+- Engine air filter: dirty, reducing fuel economy. $59.
+- Coolant flush: due by age, recommend before it causes overheating. $129.
+- Battery: voltage reading marginal, could fail any time especially in cold weather. $189.
+- Wiper blades: worn, unsafe in rain. $45.
+
+Service advisor note: We strongly recommend approving all items today. Your car is overdue for this maintenance and we would hate to see you stranded. Total additional estimate: $954.'),
 
 ('Vague Safety Warnings',
- 'Mechanic said several things were about to fail — but gave no specifics, no evidence, and a lot of urgency.',
- 'Customer brought vehicle in for a noise when turning. Technician says the following items need attention: Something in the front suspension is loose — could be a tie rod or ball joint, hard to tell without more disassembly. Brakes are getting low — probably have a few months left but could go any time. Radiator hose looks old — these things can blow out without warning. Transmission is slipping slightly — you might not notice it yet but we can feel it. Timing belt is due — if this breaks your engine is done. Rear shocks are soft — you can feel it on bumps. Technician said: I would not feel comfortable letting my wife drive this car in this condition. Recommend approving full inspection and all repairs. Full estimate pending further disassembly: estimated $1,400 to $2,200.');
+ 'Mechanic flagged 6 dangerous problems — but could not describe a single one specifically.',
+ 'Vehicle: 2016 Honda Civic, 61,000 miles. Customer brought in for a clicking noise when turning.
+
+Technician recommendations after inspection:
+- Front suspension: something is loose up there, could be a tie rod or ball joint — hard to say without more disassembly. Dangerous if it lets go while driving. Estimate pending: $300–$700.
+- Brakes: getting low, probably a few months left but could go any time. $280.
+- Radiator hose: looks old and soft, these things blow without warning. $95.
+- Transmission: slipping slightly, you might not feel it yet but we can. If you wait it could be a $2,000 repair. Service now: $220.
+- Timing belt: this is due soon and if it breaks the engine is done. $650.
+- Rear shocks: soft, you can feel it on bumps. $380.
+
+Technician told customer: I would not feel comfortable letting my family drive this car right now. Total estimate: $1,400 to $2,200. Recommend approving full disassembly inspection before final quote.'),
+
+('First Car, First Repair',
+ 'First-time car owner. Shop used technical jargon, implied the car was unsafe to drive, and quoted $1,170.',
+ 'Vehicle: 2015 Honda Civic, 67,000 miles. Customer is first-time car owner, brought in for squeaking noise on brakes.
+
+Service advisor findings:
+- Front struts: leaking oil — vehicle handling is compromised and unsafe. Must replace. $480.
+- Brake rotors: showing wear grooves from worn pads — recommend resurface or replace. $220.
+- Transmission service: fluid is dark and burnt, risk of total transmission failure if not serviced immediately. $180.
+- Spark plugs: due for replacement at this mileage. $120.
+- Tire rotation and balance: tires showing uneven wear caused by the bad struts. $80.
+- Front end alignment: required due to strut wear, tires will keep wearing unevenly without it. $90.
+
+Service advisor told customer: Your car is not safe to drive in this condition. We strongly recommend approving all repairs today — if something fails on the road it could cost you much more. Total estimate: $1,170.'),
+
+('100k Service Bundle',
+ 'Hit 100k miles. Shop recommended 8 services — some genuinely due, others opportunistic.',
+ 'Vehicle: 2014 Nissan Altima, 102,500 miles. Brought in for 100,000-mile service.
+
+Shop recommendations:
+- Timing chain tensioner inspection: showing slack at high mileage, rattling on cold start. Recommend inspection and potential replacement. $320.
+- Spark plugs (iridium, set of 4): original plugs, due at 100k per manufacturer schedule. $240.
+- Serpentine belt: showing minor surface cracking, recommend proactive replacement. $130.
+- Coolant flush: manufacturer recommends every 50k miles. Due. $120.
+- Fuel injector cleaning: improve fuel economy and performance. $149.
+- Power steering flush: fluid discolored. $110.
+- Differential fluid: front and rear, standard interval service. $180.
+- Air filter: dirty, reducing MPG. $55.
+
+Service advisor note: at 100k miles these are all expected maintenance items. Recommend approving as a package for a discount. Total estimate: $1,304.'),
+
+('Dashboard Warning Lights',
+ 'Check engine light on with 3 codes. Shop quoted $1,200 — but not all codes are equal.',
+ 'Vehicle: 2017 Chevrolet Malibu, 88,300 miles. Check engine light on, slight reduction in fuel economy noticed by customer.
+
+Diagnostic scan results:
+- P0420 — Catalytic converter efficiency below threshold, Bank 1. Technician confirms via live O2 sensor data: upstream and downstream sensors showing same reading, converter not functioning. Recommend replacement: $920.
+- P0171 — System running lean, Bank 1. Possible causes: vacuum leak, dirty MAF sensor, or failing O2 sensor. Smoke test recommended to diagnose before replacing parts. Smoke test fee: $95. Potential repair $150–$380 depending on cause.
+- P0456 — Small EVAP system leak (less than 0.020 inches). Often caused by loose gas cap or minor hose crack. Recommend checking gas cap first. If not resolved, EVAP smoke test: $95. Possible purge valve replacement: $120.
+
+Technician recommendation: Replace catalytic converter now, diagnose lean condition and EVAP before quoting repairs. Total current estimate: $1,230.'),
+
+('Post-Accident Add-Ons',
+ 'Brought in for a minor fender bender repair. Shop found six unrelated problems — none of them mentioned before the accident.',
+ 'Vehicle: 2020 Subaru Outback, 29,800 miles. Vehicle in for minor rear bumper repair after low-speed parking lot impact.
+
+Bumper repair (reason for visit): $640. Parts and labor, paint matched.
+
+Additional items identified during intake inspection:
+- Rear differential fluid: dark, recommend service. $120. Note: no connection to impact area.
+- Cabin air filter: dirty. $65.
+- Brake fluid: looks old, recommend flush. $85.
+- Windshield wipers: worn, recommend replacement. $45.
+- Engine air filter: slightly dirty, preventive replacement recommended. $55.
+- Tire rotation: due by mileage. $45.
+
+Service advisor note: Since the car is already in the shop, now is a great time to take care of these items. Saves you a trip. Total additional estimate: $415.'),
+
+('Dealer Service Visit',
+ 'Took a 2-year-old car to the dealership for an oil change. Came out with a 7-item service checklist.',
+ 'Vehicle: 2022 Honda CR-V, 22,100 miles. Brought to dealership for first scheduled oil change.
+
+Oil change and tire rotation (included in service package): $0.
+
+Multi-point inspection findings — dealer recommendations:
+- Brake fluid: Honda recommends replacement every 3 years regardless of mileage. Vehicle is 2 years old. $99.
+- Cabin air filter: showing dust accumulation, recommend replacement for air quality. $89.
+- Engine air filter: recommend replacement for optimal performance. $69.
+- Fuel system cleaning: dealer-branded induction service, improves throttle response. $199.
+- Wheel alignment: technician recommends checking alignment annually. $119.
+- Tire balancing: minor vibration noticed at highway speed during road test. $89.
+- Honda Care extended warranty: protect your investment past 36k miles. $1,495.
+
+Service advisor note: These are all Honda-recommended maintenance items. We can get everything done today while you wait. Total estimate: $2,159 (including warranty).');
