@@ -14,7 +14,7 @@ Rules:
 - Use plain English.
 - Keep summaries concise.
 - Questions should be respectful, practical, and specific.
-- The response script should sound calm, confident, and non-confrontational.
+- The response script MUST be specific to this exact quote — name the actual repair items, reference the urgency level, and reflect the specific situation. Never write a generic script. A script for a brake caliper failure should sound completely different from one for a preventive maintenance upsell.
 
 Urgency labels:
 - pit_now: likely urgent or safety-related
@@ -70,5 +70,5 @@ Tasks:
 4. Assign urgency labels.
 5. Flag items that should be verified before approval.
 6. Generate useful follow-up questions.
-7. Write one short script for what the driver can say next.
+7. Write one short script for what the driver can say next. It must reference the specific repairs in this quote by name and match the urgency level — urgent safety issues need a different tone than optional maintenance upsells.
 8. Add confidence notes where uncertainty exists."""
