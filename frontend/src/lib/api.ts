@@ -14,6 +14,7 @@ export interface RepairItem {
   verify_flag: boolean
   questions_to_ask: string[]
   confidence: 'low' | 'medium' | 'high'
+  price_range?: string
 }
 
 export interface AnalyzeResponse {
@@ -24,6 +25,7 @@ export interface AnalyzeResponse {
   questions_for_the_garage: string[]
   what_to_say_next: string
   confidence_notes: string[]
+  briefing_id?: string
 }
 
 export interface DemoScenario {
@@ -75,6 +77,17 @@ export async function analyzeImage(
 export async function getDemoScenarios(): Promise<DemoScenario[]> {
   const res = await fetch(`${API_URL}/api/demo-scenarios`)
   if (!res.ok) throw new Error('Failed to load demo scenarios')
+  return res.json()
+}
+
+export async function getSharedBriefing(
+  id: string
+): Promise<{ result: AnalyzeResponse; vehicle_context: VehicleContext | null }> {
+  const res = await fetch(`${API_URL}/api/briefing/${id}`)
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}))
+    throw new Error(err.detail || 'Briefing not found')
+  }
   return res.json()
 }
 

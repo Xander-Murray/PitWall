@@ -1,6 +1,6 @@
-import { useLocation, useNavigate } from 'react-router-dom'
-import { useState } from 'react'
-import { AnalyzeResponse, RepairItem, VehicleContext } from '../lib/api'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { AnalyzeResponse, RepairItem, VehicleContext, getSharedBriefing } from '../lib/api'
 
 type Urgency = 'pit_now' | 'next_lap' | 'monitor' | 'unclear'
 type Risk = 'low' | 'medium' | 'high'
@@ -34,54 +34,120 @@ const RISK_CLASSES: Record<Risk, string> = {
 export default function BriefingPage() {
   const location = useLocation()
   const navigate = useNavigate()
-  const state = location.state as { result: AnalyzeResponse; quoteText?: string; vehicle?: VehicleContext } | null
+  const { id } = useParams<{ id?: string }>()
 
-  if (!state?.result) {
+  const locationState = location.state as { result: AnalyzeResponse; quoteText?: string; vehicle?: VehicleContext } | null
+
+  const [result, setResult] = useState<AnalyzeResponse | null>(locationState?.result ?? null)
+  const [vehicle, setVehicle] = useState<VehicleContext | undefined>(locationState?.vehicle)
+  const [loading, setLoading] = useState(!!id && !locationState?.result)
+  const [fetchError, setFetchError] = useState<string | null>(null)
+  const isSharedView = !!id
+
+  useEffect(() => {
+    if (id && !locationState?.result) {
+      setLoading(true)
+      getSharedBriefing(id)
+        .then(data => {
+          setResult(data.result)
+          setVehicle(data.vehicle_context ?? undefined)
+        })
+        .catch(err => setFetchError(err instanceof Error ? err.message : 'Failed to load briefing.'))
+        .finally(() => setLoading(false))
+    }
+  }, [id])
+
+  // Loading state for shared briefing fetch
+  if (loading) {
+    return (
+      <div className="min-h-screen carbon-bg flex items-center justify-center">
+        <div className="text-center">
+          <div className="font-mono text-xs text-accent tracking-widest uppercase mb-3 animate-pulse">Loading Briefing</div>
+          <div className="font-mono text-silver/40 text-xs">Retrieving analysis from pit wall...</div>
+        </div>
+      </div>
+    )
+  }
+
+  // Error state for failed shared briefing fetch
+  if (fetchError) {
+    return (
+      <div className="min-h-screen carbon-bg flex items-center justify-center px-6">
+        <div className="border border-pit-now/40 rounded-lg p-8 max-w-md text-center">
+          <div className="font-mono text-xs text-pit-now tracking-widest uppercase mb-3">Briefing Not Found</div>
+          <p className="text-text-secondary text-sm mb-6">{fetchError}</p>
+          <button onClick={() => navigate('/pit-check')} className="px-5 py-2 bg-accent text-[#0d0d0d] font-sans font-bold text-sm tracking-wider uppercase rounded">
+            Run a New Check
+          </button>
+        </div>
+      </div>
+    )
+  }
+
+  if (!result) {
     navigate('/pit-check', { replace: true })
     return null
   }
 
-  const { result, vehicle } = state
-
   const vehicleLabel = [vehicle?.year, vehicle?.make, vehicle?.model]
     .filter(Boolean).join(' ') || null
+
+  // Confidence qualifier counts (computed from existing data — no extra AI call)
+  const evidencedCount = result.repair_items.filter(i => i.urgency === 'pit_now' || i.urgency === 'next_lap').length
+  const unclearCount = result.repair_items.filter(i => i.urgency === 'unclear').length
+  const verifyCount = result.repair_items.filter(i => i.verify_flag).length
 
   return (
     <div className="min-h-screen carbon-bg">
       {/* Nav */}
-      <nav className="sticky top-0 z-10 flex items-center justify-between px-6 py-4 border-b border-[#2a2a2a] bg-[#0d0d0d]/95 backdrop-blur">
+      <nav className="sticky top-0 z-10 flex items-center justify-between px-6 py-4 border-b border-silver/10 bg-[#0d0d0d]/95 backdrop-blur">
         <div>
           <button onClick={() => navigate('/')} className="font-mono text-accent text-sm font-bold tracking-widest hover:opacity-80 transition-opacity">PITWALL</button>
           {vehicleLabel && (
             <span className="ml-3 font-mono text-xs text-silver/50">{vehicleLabel}</span>
           )}
         </div>
-        <button
-          onClick={() => navigate('/pit-check')}
-          className="font-mono text-xs text-silver/50 hover:text-silver transition-colors tracking-wider uppercase border border-silver/15 hover:border-silver/40 rounded px-3 py-1.5"
-        >
-          New Check
-        </button>
+        <div className="flex items-center gap-2">
+          {result.briefing_id && <ShareButton briefingId={result.briefing_id} />}
+          <button
+            onClick={() => navigate('/pit-check')}
+            className="font-mono text-xs text-silver/50 hover:text-silver transition-colors tracking-wider uppercase border border-silver/15 hover:border-silver/40 rounded px-3 py-1.5"
+          >
+            New Check
+          </button>
+        </div>
       </nav>
 
       <main className="max-w-5xl mx-auto px-4 sm:px-6 py-8 space-y-6">
         {/* Header */}
-        <div className="fade-in-1 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="fade-in-1 flex flex-col sm:flex-row sm:items-start justify-between gap-4">
           <div>
-            <div className="font-mono text-xs text-silver/50 tracking-widest uppercase mb-1">Pit-Wall Briefing</div>
+            <div className="font-mono text-xs text-silver/50 tracking-widest uppercase mb-1">
+              {isSharedView ? 'Shared Analysis' : 'Pit-Wall Briefing'}
+            </div>
             <h1 className="font-sans font-bold text-2xl text-text-primary">Race Engineer Analysis</h1>
           </div>
-          {/* Overall risk badge */}
-          <div className={`inline-flex items-center gap-2 border rounded px-4 py-2 font-mono text-sm font-bold tracking-widest ${RISK_CLASSES[result.overall_risk]}`}>
-            <div className="w-2 h-2 rounded-full bg-current" />
-            {RISK_LABEL[result.overall_risk]}
-            <span className="text-xs opacity-70 ml-1">/ {URGENCY_LABELS[result.race_status]}</span>
+          {/* Overall risk badge + confidence qualifier */}
+          <div className="flex flex-col items-start sm:items-end gap-1.5">
+            <div className={`inline-flex items-center gap-2 border rounded px-4 py-2 font-mono text-sm font-bold tracking-widest ${RISK_CLASSES[result.overall_risk]}`}>
+              <div className="w-2 h-2 rounded-full bg-current" />
+              {RISK_LABEL[result.overall_risk]}
+              <span className="text-xs opacity-70 ml-1">/ {URGENCY_LABELS[result.race_status]}</span>
+            </div>
+            {result.repair_items.length > 0 && (
+              <div className="font-mono text-xs text-silver/45 tracking-wide">
+                {evidencedCount > 0 && <span>{evidencedCount} evidenced</span>}
+                {evidencedCount > 0 && unclearCount > 0 && <span> · </span>}
+                {unclearCount > 0 && <span>{unclearCount} unclear</span>}
+                {verifyCount > 0 && <span> · {verifyCount} verify flag{verifyCount > 1 ? 's' : ''}</span>}
+              </div>
+            )}
           </div>
         </div>
 
         {/* Team Radio Summary */}
-        <section className="fade-in-2 border border-[#2a2a2a] rounded-lg overflow-hidden">
-          <div className="px-5 py-3 bg-[#141414] border-b border-[#2a2a2a] flex items-center gap-2">
+        <section className="fade-in-2 border border-silver/10 rounded-lg overflow-hidden">
+          <div className="px-5 py-3 bg-[#141414] border-b border-silver/10 flex items-center gap-2">
             <div className="w-1.5 h-1.5 rounded-full bg-accent" />
             <span className="font-mono text-xs text-accent tracking-widest uppercase">Team Radio Summary</span>
           </div>
@@ -110,9 +176,9 @@ export default function BriefingPage() {
 
         {/* Confidence Notes */}
         {result.confidence_notes.length > 0 && (
-          <section className="fade-in-5 border border-[#2a2a2a] rounded-lg overflow-hidden">
-            <div className="px-5 py-3 bg-[#141414] border-b border-[#2a2a2a]">
-              <span className="font-mono text-xs text-text-secondary tracking-widest uppercase">Confidence Notes</span>
+          <section className="fade-in-5 border border-silver/10 rounded-lg overflow-hidden">
+            <div className="px-5 py-3 bg-[#141414] border-b border-silver/10">
+              <span className="font-mono text-xs text-silver/50 tracking-widest uppercase">Confidence Notes</span>
             </div>
             <div className="px-5 py-4 bg-[#141414] space-y-2">
               {result.confidence_notes.map((note, i) => (
@@ -145,6 +211,29 @@ export default function BriefingPage() {
   )
 }
 
+// -- ShareButton --------------------------------------------------------------
+
+function ShareButton({ briefingId }: { briefingId: string }) {
+  const [copied, setCopied] = useState(false)
+
+  const handleShare = () => {
+    const url = `${window.location.origin}/briefing/${briefingId}`
+    navigator.clipboard.writeText(url).then(() => {
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    })
+  }
+
+  return (
+    <button
+      onClick={handleShare}
+      className="font-mono text-xs text-silver/50 hover:text-silver transition-colors tracking-wider uppercase border border-silver/15 hover:border-silver/40 rounded px-3 py-1.5"
+    >
+      {copied ? 'COPIED!' : 'SHARE'}
+    </button>
+  )
+}
+
 // -- RepairItemCard -----------------------------------------------------------
 
 function RepairItemCard({ item, index }: { item: RepairItem; index: number }) {
@@ -152,7 +241,7 @@ function RepairItemCard({ item, index }: { item: RepairItem; index: number }) {
   const stagger = `fade-in-${Math.min(index + 1, 5)}`
 
   return (
-    <div className={`${stagger} border border-[#2a2a2a] rounded-lg overflow-hidden flex`}>
+    <div className={`${stagger} border border-silver/10 rounded-lg overflow-hidden flex`}>
       {/* Left urgency bar */}
       <div className="w-1 shrink-0" style={{ backgroundColor:
         item.urgency === 'pit_now' ? '#FF1801' :
@@ -166,7 +255,11 @@ function RepairItemCard({ item, index }: { item: RepairItem; index: number }) {
             {URGENCY_LABELS[item.urgency]}
           </span>
         </div>
-        <p className="text-text-secondary text-xs leading-relaxed mb-3">{item.reason}</p>
+        <p className="text-text-secondary text-xs leading-relaxed mb-2">{item.reason}</p>
+        {/* Price range — shown when AI provides an estimate */}
+        {item.price_range && (
+          <p className="font-mono text-xs text-silver/50 mb-3">{item.price_range}</p>
+        )}
         <div className="flex items-center gap-3">
           {item.verify_flag && (
             <span className="font-mono text-xs text-[#FFF200] border border-[#FFF200]/30 bg-[#FFF200]/10 px-2 py-0.5 rounded">
@@ -205,8 +298,8 @@ function QuestionsCard({ questions }: { questions: string[] }) {
   }
 
   return (
-    <div className="border border-[#2a2a2a] rounded-lg overflow-hidden flex flex-col">
-      <div className="px-5 py-3 bg-[#141414] border-b border-[#2a2a2a] flex items-center justify-between">
+    <div className="border border-silver/10 rounded-lg overflow-hidden flex flex-col">
+      <div className="px-5 py-3 bg-[#141414] border-b border-silver/10 flex items-center justify-between">
         <span className="font-mono text-xs text-accent tracking-widest uppercase">Questions for the Garage</span>
         <button
           onClick={handleCopy}
@@ -240,8 +333,8 @@ function ScriptCard({ script }: { script: string }) {
   }
 
   return (
-    <div className="border border-[#2a2a2a] rounded-lg overflow-hidden flex flex-col">
-      <div className="px-5 py-3 bg-[#141414] border-b border-[#2a2a2a] flex items-center justify-between">
+    <div className="border border-silver/10 rounded-lg overflow-hidden flex flex-col">
+      <div className="px-5 py-3 bg-[#141414] border-b border-silver/10 flex items-center justify-between">
         <span className="font-mono text-xs text-accent tracking-widest uppercase">What to Say Next</span>
         <button
           onClick={handleCopy}

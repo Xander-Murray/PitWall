@@ -9,6 +9,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/pit-check" element={<PitCheckPage />} />
+        <Route path="/briefing/:id" element={<BriefingPage />} />
         <Route path="/briefing" element={<BriefingPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
