@@ -28,7 +28,7 @@ PitWall acts as your **AI race engineer** during a repair visit — analyzing me
 
 ---
 
-![PitWall Briefing Page](screenshots/demo.png)
+![PitWall Briefing Page](screenshots/briefing.png)
 
 ---
 
