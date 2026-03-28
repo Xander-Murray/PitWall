@@ -24,7 +24,7 @@ Most people don't know what to ask. Most people don't know what can wait. Most p
 
 PitWall acts as your **AI race engineer** during a repair visit — analyzing mechanic recommendations, separating urgent work from optional upsells, and giving you the exact words to say before you approve anything.
 
-> *In F1, no driver makes a pit stop decision alone. They have a race engineer on the wall reading the data, managing the risk, and calling the play. That's PitWall for everyday drivers.*
+> _In F1, no driver makes a pit stop decision alone. They have a race engineer on the wall reading the data, managing the risk, and calling the play. That's PitWall for everyday drivers._
 
 ---
 
@@ -48,20 +48,20 @@ PitWall acts as your **AI race engineer** during a repair visit — analyzing me
 
 ## Demo Scenarios
 
-![Demo Scenario Grid](screenshots/pitcheck.png)
+![Demo Scenario Grid](screenshots/demo.png)
 
 PitWall ships with 8 ready-to-run scenarios including:
 
-| Scenario | What it demonstrates |
-|----------|----------------------|
-| Mixed Repair Quote | Separating safety-critical work from upsells |
-| Urgent Safety Issue | Immediate action required — brake line failure |
-| The Oil Change That Grew | $40 visit becomes $895 in pressure |
-| First Car, First Repair | Intimidation tactics on a first-time owner |
-| Vague Safety Warnings | No evidence, no specifics, all urgency |
-| Dashboard Warning Lights | Multiple codes — some serious, some not |
-| High-Mileage 100k Bundle | Real maintenance vs opportunistic additions |
-| Preventive Maintenance Upsell | When "recommended" doesn't mean "required" |
+| Scenario                      | What it demonstrates                           |
+| ----------------------------- | ---------------------------------------------- |
+| Mixed Repair Quote            | Separating safety-critical work from upsells   |
+| Urgent Safety Issue           | Immediate action required — brake line failure |
+| The Oil Change That Grew      | $40 visit becomes $895 in pressure             |
+| First Car, First Repair       | Intimidation tactics on a first-time owner     |
+| Vague Safety Warnings         | No evidence, no specifics, all urgency         |
+| Dashboard Warning Lights      | Multiple codes — some serious, some not        |
+| High-Mileage 100k Bundle      | Real maintenance vs opportunistic additions    |
+| Preventive Maintenance Upsell | When "recommended" doesn't mean "required"     |
 
 ---
 
@@ -69,16 +69,16 @@ PitWall ships with 8 ready-to-run scenarios including:
 
 PitWall maps the driver experience to the F1 pit wall model:
 
-| Real World | PitWall |
-|-----------|---------|
-| Driver | You |
-| Mechanic recommendation | The incoming data |
-| PitWall app | Your race engineer |
-| Repair decision | The pit stop call |
-| PIT NOW | Safety-critical, act today |
-| NEXT LAP | Address soon |
-| MONITOR | Can wait, keep watching |
-| UNCLEAR | Get a second opinion first |
+| Real World              | PitWall                    |
+| ----------------------- | -------------------------- |
+| Driver                  | You                        |
+| Mechanic recommendation | The incoming data          |
+| PitWall app             | Your race engineer         |
+| Repair decision         | The pit stop call          |
+| PIT NOW                 | Safety-critical, act today |
+| NEXT LAP                | Address soon               |
+| MONITOR                 | Can wait, keep watching    |
+| UNCLEAR                 | Get a second opinion first |
 
 The UI is built on a **Mercedes W14 pit wall aesthetic** — near-black carbon background, platinum silver typography, Petronas teal accents, and Space Mono for all data values.
 
@@ -86,20 +86,21 @@ The UI is built on a **Mercedes W14 pit wall aesthetic** — near-black carbon b
 
 ## Tech Stack
 
-| Layer | Technology |
-|-------|-----------|
-| Frontend | Vite + React + TypeScript + Tailwind CSS |
-| UI | Custom F1 theme (Space Grotesk + Space Mono) |
-| Backend | FastAPI (Python) |
-| AI | Llama 3.3 70B via Groq API |
-| Database | Supabase (PostgreSQL) |
-| Routing | React Router v6 |
+| Layer    | Technology                                   |
+| -------- | -------------------------------------------- |
+| Frontend | Vite + React + TypeScript + Tailwind CSS     |
+| UI       | Custom F1 theme (Space Grotesk + Space Mono) |
+| Backend  | FastAPI (Python)                             |
+| AI       | Llama 3.3 70B via Groq API                   |
+| Database | Supabase (PostgreSQL)                        |
+| Routing  | React Router v6                              |
 
 ---
 
 ## Running Locally
 
 ### Prerequisites
+
 - Node.js 18+
 - Python 3.11+
 - A [Groq API key](https://console.groq.com) (free)
@@ -115,6 +116,7 @@ pip install -r requirements.txt
 ```
 
 Create `backend/.env`:
+
 ```
 GROQ_API_KEY=your_groq_key
 SUPABASE_URL=https://your-project.supabase.co
@@ -133,6 +135,7 @@ npm install
 ```
 
 Create `frontend/.env`:
+
 ```
 VITE_SUPABASE_URL=https://your-project.supabase.co
 VITE_SUPABASE_ANON_KEY=your_anon_key
@@ -196,4 +199,4 @@ Solo build · 8 hours · F1 Theme + Best Pitch tracks
 
 ---
 
-*PitWall is not a legal or mechanical authority. It is an informational decision-support tool. Always consult a qualified mechanic for safety-critical repairs.*
+_PitWall is not a legal or mechanical authority. It is an informational decision-support tool. Always consult a qualified mechanic for safety-critical repairs._
