@@ -241,7 +241,7 @@ function PageHeader({ onBack }: { onBack: () => void }) {
         <span className="font-mono text-xs">&#8592;</span>
         <span className="font-mono text-xs tracking-wider uppercase">Back</span>
       </button>
-      <span className="font-mono text-accent text-sm font-bold tracking-widest">PITWALL</span>
+      <button onClick={() => navigate('/')} className="font-mono text-accent text-sm font-bold tracking-widest hover:opacity-80 transition-opacity">PITWALL</button>
       <div className="w-16" />
     </nav>
   )

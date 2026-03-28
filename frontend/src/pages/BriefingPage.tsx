@@ -51,7 +51,7 @@ export default function BriefingPage() {
       {/* Nav */}
       <nav className="sticky top-0 z-10 flex items-center justify-between px-6 py-4 border-b border-[#2a2a2a] bg-[#0d0d0d]/95 backdrop-blur">
         <div>
-          <span className="font-mono text-accent text-sm font-bold tracking-widest">PITWALL</span>
+          <button onClick={() => navigate('/')} className="font-mono text-accent text-sm font-bold tracking-widest hover:opacity-80 transition-opacity">PITWALL</button>
           {vehicleLabel && (
             <span className="ml-3 font-mono text-xs text-text-secondary">{vehicleLabel}</span>
           )}
