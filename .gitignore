@@ -1,0 +1,27 @@
+# Dependencies
+node_modules/
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Build outputs
+dist/
+build/
+*.egg-info/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Docs (planning only)
+pitwall_docs/
+
+# Editor
+.DS_Store
+*.swp
+*.swo
+
+# Supabase
+.supabase/
