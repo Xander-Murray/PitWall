@@ -78,14 +78,26 @@ def analyze_image_quote(image_bytes: bytes, mime_type: str, vehicle: Optional[Ve
         max_tokens=2048,
     )
 
-    text = response.choices[0].message.content
+    text = (response.choices[0].message.content or "").strip()
+
+    # Strip markdown code fences if the model wrapped the JSON
+    if text.startswith("```"):
+        text = text.split("```")[1]
+        if text.startswith("json"):
+            text = text[4:]
+        text = text.strip()
+
+    def _parse(raw: str) -> AnalyzeResponse:
+        if not raw:
+            raise ValueError("Vision model returned an empty response.")
+        data = json.loads(raw)
+        return AnalyzeResponse(**data)
 
     try:
-        data = json.loads(text)
-        return AnalyzeResponse(**data)
+        return _parse(text)
     except Exception:
         # One retry with stronger JSON-only instruction
-        retry_prompt = user_prompt + "\n\nIMPORTANT: Return only valid JSON matching the schema. No other text."
+        retry_prompt = user_prompt + "\n\nIMPORTANT: Return only valid JSON matching the schema. No other text. No markdown."
         response = _client.chat.completions.create(
             model="meta-llama/llama-4-scout-17b-16e-instruct",
             messages=[
@@ -101,5 +113,10 @@ def analyze_image_quote(image_bytes: bytes, mime_type: str, vehicle: Optional[Ve
             temperature=0.2,
             max_tokens=2048,
         )
-        data = json.loads(response.choices[0].message.content)
-        return AnalyzeResponse(**data)
+        retry_text = (response.choices[0].message.content or "").strip()
+        if retry_text.startswith("```"):
+            retry_text = retry_text.split("```")[1]
+            if retry_text.startswith("json"):
+                retry_text = retry_text[4:]
+            retry_text = retry_text.strip()
+        return _parse(retry_text)
