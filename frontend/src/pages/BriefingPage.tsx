@@ -1,6 +1,10 @@
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { useState, useEffect } from 'react'
-import { AnalyzeResponse, RepairItem, VehicleContext, getSharedBriefing } from '../lib/api'
+import {
+  AnalyzeResponse, RepairItem, VehicleContext,
+  getSharedBriefing, getCommunityStats, submitOutcomes,
+  CommunityStats, OutcomeItem,
+} from '../lib/api'
 
 type Urgency = 'pit_now' | 'next_lap' | 'monitor' | 'unclear'
 type Risk = 'low' | 'medium' | 'high'
@@ -31,6 +35,8 @@ const RISK_CLASSES: Record<Risk, string> = {
   high: 'text-[#FF1801] border-[#FF1801]/40 bg-[#FF1801]/10',
 }
 
+type OutcomeState = { approved: boolean | null; price: string }
+
 export default function BriefingPage() {
   const location = useLocation()
   const navigate = useNavigate()
@@ -44,6 +50,14 @@ export default function BriefingPage() {
   const [fetchError, setFetchError] = useState<string | null>(null)
   const isSharedView = !!id
 
+  // Community stats state
+  const [communityStats, setCommunityStats] = useState<CommunityStats>({})
+
+  // Outcome reporting state — initialised after result is known
+  const [outcomeItems, setOutcomeItems] = useState<Record<string, OutcomeState>>({})
+  const [outcomesSubmitted, setOutcomesSubmitted] = useState(false)
+  const [outcomesLoading, setOutcomesLoading] = useState(false)
+
   useEffect(() => {
     if (id && !locationState?.result) {
       setLoading(true)
@@ -56,6 +70,17 @@ export default function BriefingPage() {
         .finally(() => setLoading(false))
     }
   }, [id])
+
+  // Fetch community stats once result is available
+  useEffect(() => {
+    if (!result) return
+    const names = result.repair_items.map(i => i.name.toLowerCase().trim())
+    getCommunityStats(names).then(setCommunityStats).catch(() => {})
+    // Init outcome items
+    setOutcomeItems(
+      Object.fromEntries(result.repair_items.map(i => [i.name, { approved: null, price: '' }]))
+    )
+  }, [result])
 
   // Loading state for shared briefing fetch
   if (loading) {
@@ -92,10 +117,25 @@ export default function BriefingPage() {
   const vehicleLabel = [vehicle?.year, vehicle?.make, vehicle?.model]
     .filter(Boolean).join(' ') || null
 
-  // Confidence qualifier counts (computed from existing data — no extra AI call)
   const evidencedCount = result.repair_items.filter(i => i.urgency === 'pit_now' || i.urgency === 'next_lap').length
   const unclearCount = result.repair_items.filter(i => i.urgency === 'unclear').length
   const verifyCount = result.repair_items.filter(i => i.verify_flag).length
+
+  const canSubmitOutcomes = Object.values(outcomeItems).some(v => v.approved !== null)
+
+  const handleSubmitOutcomes = async () => {
+    setOutcomesLoading(true)
+    const items: OutcomeItem[] = Object.entries(outcomeItems)
+      .filter(([, v]) => v.approved !== null)
+      .map(([name, v]) => ({
+        repair_name: name,
+        approved: v.approved!,
+        actual_price_paid: v.approved && v.price ? parseFloat(v.price) : undefined,
+      }))
+    await submitOutcomes(result.briefing_id, vehicle, items).catch(() => {})
+    setOutcomesSubmitted(true)
+    setOutcomesLoading(false)
+  }
 
   return (
     <div className="min-h-screen carbon-bg">
@@ -127,7 +167,6 @@ export default function BriefingPage() {
             </div>
             <h1 className="font-sans font-bold text-2xl text-text-primary">Race Engineer Analysis</h1>
           </div>
-          {/* Overall risk badge + confidence qualifier */}
           <div className="flex flex-col items-start sm:items-end gap-1.5">
             <div className={`inline-flex items-center gap-2 border rounded px-4 py-2 font-mono text-sm font-bold tracking-widest ${RISK_CLASSES[result.overall_risk]}`}>
               <div className="w-2 h-2 rounded-full bg-current" />
@@ -163,7 +202,12 @@ export default function BriefingPage() {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {result.repair_items.map((item, i) => (
-              <RepairItemCard key={i} item={item} index={i} />
+              <RepairItemCard
+                key={i}
+                item={item}
+                index={i}
+                communityStats={communityStats}
+              />
             ))}
           </div>
         </section>
@@ -187,6 +231,78 @@ export default function BriefingPage() {
                   {note}
                 </p>
               ))}
+            </div>
+          </section>
+        )}
+
+        {/* How did it go? — outcome reporting */}
+        {result.briefing_id && result.repair_items.length > 0 && (
+          <section className="fade-in-5 border border-silver/10 rounded-lg overflow-hidden">
+            <div className="px-5 py-3 bg-[#141414] border-b border-silver/10">
+              <span className="font-mono text-xs text-silver/50 tracking-widest uppercase">How Did It Go?</span>
+              {!outcomesSubmitted && (
+                <p className="text-text-secondary font-sans text-xs mt-1">
+                  Help the next driver — report what you actually paid.
+                </p>
+              )}
+            </div>
+            <div className="px-5 py-4 bg-[#141414]">
+              {outcomesSubmitted ? (
+                <p className="font-mono text-xs text-silver/45 tracking-wide">
+                  Thanks for reporting. Your data helps the next driver.
+                </p>
+              ) : (
+                <div className="space-y-3">
+                  {result.repair_items.map((item) => {
+                    const state = outcomeItems[item.name] ?? { approved: null, price: '' }
+                    return (
+                      <div key={item.name} className="flex flex-col sm:flex-row sm:items-center gap-2">
+                        <span className="font-sans text-sm text-text-primary flex-1 min-w-0 truncate">{item.name}</span>
+                        <div className="flex items-center gap-2 shrink-0">
+                          <button
+                            onClick={() => setOutcomeItems(prev => ({ ...prev, [item.name]: { ...state, approved: true } }))}
+                            className={`font-mono text-xs px-3 py-1 rounded border transition-all ${
+                              state.approved === true
+                                ? 'border-[#00D2BE] text-[#00D2BE] bg-[#00D2BE]/10'
+                                : 'border-silver/15 text-silver/40 hover:border-silver/40 hover:text-silver/70'
+                            }`}
+                          >
+                            APPROVED
+                          </button>
+                          <button
+                            onClick={() => setOutcomeItems(prev => ({ ...prev, [item.name]: { approved: false, price: '' } }))}
+                            className={`font-mono text-xs px-3 py-1 rounded border transition-all ${
+                              state.approved === false
+                                ? 'border-[#FF1801] text-[#FF1801] bg-[#FF1801]/10'
+                                : 'border-silver/15 text-silver/40 hover:border-silver/40 hover:text-silver/70'
+                            }`}
+                          >
+                            DECLINED
+                          </button>
+                          {state.approved === true && (
+                            <input
+                              type="number"
+                              placeholder="$ paid"
+                              value={state.price}
+                              onChange={e => setOutcomeItems(prev => ({ ...prev, [item.name]: { ...state, price: e.target.value } }))}
+                              className="w-24 bg-[#0d0d0d] border border-silver/15 rounded px-2 py-1 text-text-primary font-mono text-xs placeholder:text-silver/25 focus:outline-none focus:border-accent transition-colors"
+                            />
+                          )}
+                        </div>
+                      </div>
+                    )
+                  })}
+                  <div className="pt-2">
+                    <button
+                      onClick={handleSubmitOutcomes}
+                      disabled={!canSubmitOutcomes || outcomesLoading}
+                      className="px-5 py-2 bg-accent text-[#0d0d0d] font-sans font-bold text-xs tracking-wider uppercase rounded hover:bg-accent/90 disabled:opacity-40 disabled:cursor-not-allowed transition-all teal-glow"
+                    >
+                      {outcomesLoading ? 'Submitting...' : 'Submit Report'}
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           </section>
         )}
@@ -236,9 +352,22 @@ function ShareButton({ briefingId }: { briefingId: string }) {
 
 // -- RepairItemCard -----------------------------------------------------------
 
-function RepairItemCard({ item, index }: { item: RepairItem; index: number }) {
+function RepairItemCard({
+  item,
+  index,
+  communityStats,
+}: {
+  item: RepairItem
+  index: number
+  communityStats: CommunityStats
+}) {
   const uc = URGENCY_CLASSES[item.urgency]
   const stagger = `fade-in-${Math.min(index + 1, 5)}`
+
+  const stats = communityStats[item.name.toLowerCase().trim()]
+  const communityLine = stats && stats.total >= 3
+    ? `${stats.approved} of ${stats.total} drivers approved this${stats.avg_paid ? ` · avg paid $${stats.avg_paid}` : ''}`
+    : null
 
   return (
     <div className={`${stagger} border border-silver/10 rounded-lg overflow-hidden flex`}>
@@ -256,9 +385,11 @@ function RepairItemCard({ item, index }: { item: RepairItem; index: number }) {
           </span>
         </div>
         <p className="text-text-secondary text-xs leading-relaxed mb-2">{item.reason}</p>
-        {/* Price range — shown when AI provides an estimate */}
         {item.price_range && (
-          <p className="font-mono text-xs text-silver/50 mb-3">{item.price_range}</p>
+          <p className="font-mono text-xs text-silver/50 mb-2">{item.price_range}</p>
+        )}
+        {communityLine && (
+          <p className="font-mono text-xs text-silver/45 mb-2">{communityLine}</p>
         )}
         <div className="flex items-center gap-3">
           {item.verify_flag && (

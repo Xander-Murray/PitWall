@@ -96,3 +96,44 @@ export async function getStats(): Promise<{ count: number }> {
   if (!res.ok) return { count: 0 }
   return res.json()
 }
+
+export interface OutcomeItem {
+  repair_name: string
+  approved: boolean
+  quoted_price?: number
+  actual_price_paid?: number
+}
+
+export interface CommunityStats {
+  [repair_name: string]: {
+    approved: number
+    total: number
+    avg_paid: number | null
+  }
+}
+
+export async function submitOutcomes(
+  briefingId: string | undefined,
+  vehicle: VehicleContext | undefined,
+  items: OutcomeItem[]
+): Promise<void> {
+  await fetch(`${API_URL}/api/outcomes`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      briefing_id: briefingId,
+      vehicle_year: vehicle?.year,
+      vehicle_make: vehicle?.make,
+      vehicle_model: vehicle?.model,
+      items,
+    }),
+  })
+}
+
+export async function getCommunityStats(repairNames: string[]): Promise<CommunityStats> {
+  if (!repairNames.length) return {}
+  const query = repairNames.map(n => encodeURIComponent(n)).join(',')
+  const res = await fetch(`${API_URL}/api/community-stats?repairs=${query}`)
+  if (!res.ok) return {}
+  return res.json()
+}
