@@ -24,7 +24,7 @@ async def analyze_text(request: AnalyzeTextRequest):
             "quote_text": request.quote_text,
             "vehicle_context": request.vehicle.model_dump() if request.vehicle else None,
             "result": result.model_dump(),
-        }).select("id").execute()
+        }).execute()
         if insert_result.data:
             result.briefing_id = insert_result.data[0]["id"]
     except Exception:
@@ -66,7 +66,7 @@ async def analyze_image(
             "quote_text": "[IMAGE UPLOAD]",
             "vehicle_context": vehicle.model_dump() if vehicle else None,
             "result": result.model_dump(),
-        }).select("id").execute()
+        }).execute()
         if insert_result.data:
             result.briefing_id = insert_result.data[0]["id"]
     except Exception:
