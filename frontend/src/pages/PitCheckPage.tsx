@@ -61,7 +61,7 @@ export default function PitCheckPage() {
   if (mode === 'select') {
     return (
       <div className="min-h-screen carbon-bg flex flex-col">
-        <PageHeader onBack={() => navigate('/')} />
+        <PageHeader onBack={() => navigate('/')} onHome={() => navigate('/')} />
         <main className="flex-1 flex flex-col items-center justify-center px-6 py-16">
           <div className="w-full max-w-2xl">
             <div className="mb-8 text-center fade-in-1">
@@ -94,7 +94,7 @@ export default function PitCheckPage() {
   if (mode === 'demo') {
     return (
       <div className="min-h-screen carbon-bg flex flex-col">
-        <PageHeader onBack={() => setMode('select')} />
+        <PageHeader onBack={() => setMode('select')} onHome={() => navigate('/')} />
         <main className="flex-1 px-6 py-12 max-w-3xl mx-auto w-full">
           <div className="mb-8 fade-in-1">
             <div className="font-mono text-xs text-accent tracking-widest uppercase mb-3">Demo Scenarios</div>
@@ -127,7 +127,7 @@ export default function PitCheckPage() {
   if (mode === 'paste') {
     return (
       <div className="min-h-screen carbon-bg flex flex-col">
-        <PageHeader onBack={() => setMode('select')} />
+        <PageHeader onBack={() => setMode('select')} onHome={() => navigate('/')} />
         <main className="flex-1 px-6 py-12 max-w-2xl mx-auto w-full">
           <div className="mb-8 fade-in-1">
             <div className="font-mono text-xs text-accent tracking-widest uppercase mb-3">Paste Quote</div>
@@ -234,14 +234,14 @@ export default function PitCheckPage() {
 
 // -- Shared sub-components --------------------------------------------
 
-function PageHeader({ onBack }: { onBack: () => void }) {
+function PageHeader({ onBack, onHome }: { onBack: () => void; onHome: () => void }) {
   return (
     <nav className="flex items-center justify-between px-6 py-4 border-b border-[#2a2a2a]">
       <button onClick={onBack} className="flex items-center gap-2 text-text-secondary hover:text-text-primary transition-colors">
         <span className="font-mono text-xs">&#8592;</span>
         <span className="font-mono text-xs tracking-wider uppercase">Back</span>
       </button>
-      <button onClick={() => navigate('/')} className="font-mono text-accent text-sm font-bold tracking-widest hover:opacity-80 transition-opacity">PITWALL</button>
+      <button onClick={onHome} className="font-mono text-accent text-sm font-bold tracking-widest hover:opacity-80 transition-opacity">PITWALL</button>
       <div className="w-16" />
     </nav>
   )
