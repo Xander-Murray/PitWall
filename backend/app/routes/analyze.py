@@ -18,14 +18,15 @@ async def analyze_text(request: AnalyzeTextRequest):
     except Exception as e:
         raise HTTPException(status_code=502, detail=f"AI analysis failed: {str(e)}")
 
-    # Store in Supabase (fire and forget -- don't fail the request if this fails)
     try:
         db = get_db()
-        db.table("analyses").insert({
+        insert_result = db.table("analyses").insert({
             "quote_text": request.quote_text,
             "vehicle_context": request.vehicle.model_dump() if request.vehicle else None,
             "result": result.model_dump(),
-        }).execute()
+        }).select("id").execute()
+        if insert_result.data:
+            result.briefing_id = insert_result.data[0]["id"]
     except Exception:
         pass
 
@@ -61,11 +62,13 @@ async def analyze_image(
 
     try:
         db = get_db()
-        db.table("analyses").insert({
+        insert_result = db.table("analyses").insert({
             "quote_text": "[IMAGE UPLOAD]",
             "vehicle_context": vehicle.model_dump() if vehicle else None,
             "result": result.model_dump(),
-        }).execute()
+        }).select("id").execute()
+        if insert_result.data:
+            result.briefing_id = insert_result.data[0]["id"]
     except Exception:
         pass
 

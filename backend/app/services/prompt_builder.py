@@ -29,6 +29,12 @@ Critical: A mechanic saying "you need this" or "this is important" is NOT eviden
 - Manufacturer mileage interval that has been reached
 If none of those are present, lean toward unclear or monitor, not pit_now or next_lap.
 
+Price range guidance:
+- For each repair item, populate "price_range" with the typical national labor-and-parts range for that repair type.
+- Format: "Typical: $X–$Y" (e.g. "Typical: $150–$300"). Use the vehicle context (year/make/model) if provided to adjust the estimate.
+- If the repair is too vague to estimate reliably (e.g. "inspect engine"), set "price_range" to null.
+- This is informational context only — never frame it as a quote or guarantee.
+
 Bias toward skepticism on upsells: items like fluid flushes, fuel system cleaning, engine additives, air filters, and "preventive" services are frequently recommended before they are actually needed. Flag these with verify_flag=true and lower confidence unless specific evidence supports them.
 
 Return JSON matching this schema exactly:
@@ -43,7 +49,8 @@ Return JSON matching this schema exactly:
       "reason": "string",
       "verify_flag": true|false,
       "questions_to_ask": ["string"],
-      "confidence": "low|medium|high"
+      "confidence": "low|medium|high",
+      "price_range": "Typical: $X–$Y or null"
     }
   ],
   "questions_for_the_garage": ["string"],
