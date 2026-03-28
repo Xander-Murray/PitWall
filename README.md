@@ -8,6 +8,10 @@
 
 ---
 
+![PitWall Image Upload](screenshots/upload.png)
+
+---
+
 ## The Problem
 
 Every year, millions of drivers sit across from a mechanic they don't fully understand, holding a quote they can't interpret, under pressure to approve work they can't evaluate.
@@ -34,8 +38,8 @@ PitWall acts as your **AI race engineer** during a repair visit — analyzing me
 
 ## Features
 
-- **Paste or upload a repair quote** — text, mechanic notes, or an estimate
-- **AI analysis in seconds** — powered by Llama 3.3 70B via Groq
+- **Paste or upload a repair quote** — text input, drag-and-drop image upload (JPEG/PNG/WebP), or demo scenario
+- **AI analysis in seconds** — text powered by Llama 3.3 70B, image analysis by Llama 4 Scout 17B vision, both via Groq
 - **Urgency classification per item** — PIT NOW / NEXT LAP / MONITOR / UNCLEAR
 - **Plain-English explanations** — no mechanic jargon
 - **Verification flags** — items that need a second look before approval
@@ -91,7 +95,8 @@ The UI is built on a **Mercedes W14 pit wall aesthetic** — near-black carbon b
 | Frontend | Vite + React + TypeScript + Tailwind CSS     |
 | UI       | Custom F1 theme (Space Grotesk + Space Mono) |
 | Backend  | FastAPI (Python)                             |
-| AI       | Llama 3.3 70B via Groq API                   |
+| AI (text)  | Llama 3.3 70B via Groq API                 |
+| AI (vision)| Llama 4 Scout 17B via Groq API             |
 | Database | Supabase (PostgreSQL)                        |
 | Routing  | React Router v6                              |
 
