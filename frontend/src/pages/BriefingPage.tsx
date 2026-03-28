@@ -205,7 +205,7 @@ function QuestionsCard({ questions }: { questions: string[] }) {
   }
 
   return (
-    <div className="border border-[#2a2a2a] rounded-lg overflow-hidden">
+    <div className="border border-[#2a2a2a] rounded-lg overflow-hidden flex flex-col">
       <div className="px-5 py-3 bg-[#141414] border-b border-[#2a2a2a] flex items-center justify-between">
         <span className="font-mono text-xs text-accent tracking-widest uppercase">Questions for the Garage</span>
         <button
@@ -215,7 +215,7 @@ function QuestionsCard({ questions }: { questions: string[] }) {
           {copied ? 'COPIED' : 'COPY'}
         </button>
       </div>
-      <div className="px-5 py-4 bg-[#141414] space-y-3">
+      <div className="px-5 py-4 bg-[#141414] flex-1 space-y-3">
         {questions.map((q, i) => (
           <div key={i} className="flex gap-3">
             <span className="font-mono text-xs text-accent shrink-0 mt-0.5">{String(i + 1).padStart(2, '0')}</span>
@@ -240,7 +240,7 @@ function ScriptCard({ script }: { script: string }) {
   }
 
   return (
-    <div className="border border-[#2a2a2a] rounded-lg overflow-hidden">
+    <div className="border border-[#2a2a2a] rounded-lg overflow-hidden flex flex-col">
       <div className="px-5 py-3 bg-[#141414] border-b border-[#2a2a2a] flex items-center justify-between">
         <span className="font-mono text-xs text-accent tracking-widest uppercase">What to Say Next</span>
         <button
@@ -250,7 +250,7 @@ function ScriptCard({ script }: { script: string }) {
           {copied ? 'COPIED' : 'COPY'}
         </button>
       </div>
-      <div className="px-5 py-4 bg-[#141414]">
+      <div className="px-5 py-4 bg-[#141414] flex-1">
         <p className="font-mono text-sm text-text-primary leading-relaxed whitespace-pre-wrap">{script}</p>
       </div>
     </div>
