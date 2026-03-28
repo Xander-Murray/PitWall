@@ -48,6 +48,8 @@ PitWall acts as your **AI race engineer** during a repair visit — analyzing me
 - **Questions for the garage** — specific, respectful, evidence-demanding questions to ask
 - **What to Say Next** — a calm, confident script tailored to your exact situation
 - **Share your briefing** — shareable URL so you can forward the analysis to a friend before approving anything
+- **Community approval rates** — see how many other drivers approved or declined each repair, plus average price paid
+- **Outcome reporting** — report what you actually paid after the visit; every submission improves data for the next driver
 - **8 demo scenarios** — upsell stacks, pressure tactics, legitimate safety issues, and more
 - **Live pit checks counter** — every analysis stored to Supabase in real time
 
@@ -187,6 +189,7 @@ PitWall/
 │       │   ├── analyze.py
 │       │   ├── briefing.py
 │       │   ├── demo.py
+│       │   ├── outcomes.py
 │       │   └── stats.py
 │       ├── services/
 │       │   ├── ai_client.py
@@ -196,7 +199,8 @@ PitWall/
 │           └── response_models.py
 └── supabase/
     ├── migrations/
-    └── seed.sql
+    ├── seed.sql
+    └── outcomes_seed.sql
 ```
 
 ---
